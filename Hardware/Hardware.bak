@@ -781,6 +781,4 @@ Connection ~ 5200 6150
 NoConn ~ 4900 6050
 NoConn ~ 4900 5850
 NoConn ~ 4900 5750
-Text GLabel 4900 6250 2    60   Input ~ 0
-3V3
 $EndSCHEMATC
