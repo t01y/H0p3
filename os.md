@@ -38,7 +38,7 @@ U32 OSRdyTbl;   这是一个32 bit 的任务就绪表, 每一位都代表任务�
 /* 在就绪表中查找更高级的就绪任务 */
 #define OS_GET_HIGH_RDY() {\
     for(unsigned char OSNextTaskPrio = 0; (OSNextTaskPrio < OS_TASKS) && (!(OSRdyTbl & (0x01 << OSNextTaskPrio))); OSNextTaskPrio++);\
-    OSPrioHighRdy = OSNextTaskPrio; //获得最高优先级, OSPrioHighRdy 是一个全局变量\
+    OSPrioHighRdy = OSNextTaskPrio;\ //获得最高优先级, OSPrioHighRdy 是一个全局变量
 }
 ```
 
