@@ -178,7 +178,7 @@ OS_EXIT_CRITICAL();			//退出临界区
 // 任务创建
 void OSTaskCreate(void (*Task)(void *parg), void *parg, unsigned int *p_Stack, unsigned char TaskID) {
 	if (TaskID <= OS_TASKS) {
-		*(p_Stack) 	= (unsigned int)0x01000000;	//xPSR
+		*(p_Stack) 		= (unsigned int)0x01000000;	//xPSR
 		*(--p_Stack) 	= (unsigned int)Task;		//Entry Point of the Task
 		*(--p_Stack)	= (unsigned int)0xFFFFFFFE;	//R14(LR)(int value will)
 		*(--p_Stack) 	= (unsigned int)0x12121212;	//R12
