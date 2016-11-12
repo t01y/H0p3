@@ -55,7 +55,7 @@ void OSStar() {
         OSRunning = 1;
         // 先不忙讲任务创建
 
-        OSTaskCreate(ldleTask, (void * )0, (unsigned int * )&IDELTASK_STK[31], idelTask_Prio);
+        OSTaskCreate(ldleTask, (void *)0, (unsigned int *)&IDELTASK_STK[31], idelTask_Prio);
         // 创建空闲任务
 
         OS_GET_HIGH_RDY();
@@ -176,24 +176,24 @@ OS_EXIT_CRITICAL();			//退出临界区
 
 ```c
 // 任务创建
-void OSTaskCreate(void (* Task)(void * parg), void *parg, unsigned int *p_Stack, unsigned char TaskID) {
+void OSTaskCreate(void (*Task)(void *parg), void *parg, unsigned int *p_Stack, unsigned char TaskID) {
 	if (TaskID <= OS_TASKS) {
-		* (p_Stack) 	= (unsigned int)0x01000000;	//xPSR
-		* (--p_Stack) 	= (unsigned int)Task;		//Entry Point of the Task
-		* (--p_Stack)	= (unsigned int)0xFFFFFFFE;	//R14(LR)(int value will)
-		* (--p_Stack) 	= (unsigned int)0x12121212;	//R12
-		* (--p_Stack) 	= (unsigned int)0x03030303;	//R3
-		* (--p_Stack) 	= (unsigned int)0x02020202;	//R2
-		* (--p_Stack) 	= (unsigned int)0x01010101;	//R1
-		* (--p_Stack) 	= (unsigned int)parg;		//R0: argument
-		* (--p_Stack) 	= (unsigned int)0x11111111;	//R11
-		* (--p_Stack) 	= (unsigned int)0x10101010;	//R10
-		* (--p_Stack) 	= (unsigned int)0x09090909;	//R9
-		* (--p_Stack) 	= (unsigned int)0x08080808;	//R8
-		* (--p_Stack) 	= (unsigned int)0x07070707;	//R7
-		* (--p_Stack) 	= (unsigned int)0x06060606;	//R6
-		* (--p_Stack) 	= (unsigned int)0x05050505;	//R5
-		* (--p_Stack) 	= (unsigned int)0x04040404;	//R4
+		*(p_Stack) 	= (unsigned int)0x01000000;	//xPSR
+		*(--p_Stack) 	= (unsigned int)Task;		//Entry Point of the Task
+		*(--p_Stack)	= (unsigned int)0xFFFFFFFE;	//R14(LR)(int value will)
+		*(--p_Stack) 	= (unsigned int)0x12121212;	//R12
+		*(--p_Stack) 	= (unsigned int)0x03030303;	//R3
+		*(--p_Stack) 	= (unsigned int)0x02020202;	//R2
+		*(--p_Stack) 	= (unsigned int)0x01010101;	//R1
+		*(--p_Stack) 	= (unsigned int)parg;		//R0: argument
+		*(--p_Stack) 	= (unsigned int)0x11111111;	//R11
+		*(--p_Stack) 	= (unsigned int)0x10101010;	//R10
+		*(--p_Stack) 	= (unsigned int)0x09090909;	//R9
+		*(--p_Stack) 	= (unsigned int)0x08080808;	//R8
+		*(--p_Stack) 	= (unsigned int)0x07070707;	//R7
+		*(--p_Stack) 	= (unsigned int)0x06060606;	//R6
+		*(--p_Stack) 	= (unsigned int)0x05050505;	//R5
+		*(--p_Stack) 	= (unsigned int)0x04040404;	//R4
 
 		TCB(TaskID).OSTCBStkPtr = (unsigned int)p_Stack;	//保存堆栈地址
 		TCB(TaskID).OSTCBDly 	= 0;						//初始化任务延时
@@ -209,7 +209,7 @@ void OSTaskCreate(void (* Task)(void * parg), void *parg, unsigned int *p_Stack,
 
 ```c
 //系统空闲任务
-void ldleTask(void * pdata) {
+void ldleTask(void *pdata) {
 	unsigned int ldleCount = 0;
 	while(1) {
 		ldleCount++;
@@ -222,7 +222,7 @@ void ldleTask(void * pdata) {
 void OSStar() {
 	if (OSRunning == 0) {
 		OSRunning = 1;
-		OSTaskCreate(ldleTask, (void * )0, (unsigned int * )&IDELTASK_STK[31], ldleTask_Prio);	//创建空闲任务
+		OSTaskCreate(ldleTask, (void *)0, (unsigned int *)&IDELTASK_STK[31], ldleTask_Prio);	//创建空闲任务
 
 		OS_GET_HIGH_RDY();					//获得最高级的就绪任务
 		OSPrioCur 		= OSPrioHighRdy;	//获得最高就绪任务的 ID
