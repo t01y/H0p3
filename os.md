@@ -169,7 +169,7 @@ void OSIntExit() {
 			//中断级任务调度, 注意这里和 OSCtxSw 不一样, 但是作用是一样的
 		}
 	}
-OS_EXIT_CRITICAL();			//退出临界区
+	OS_EXIT_CRITICAL();			//退出临界区
 
 }
 ```
