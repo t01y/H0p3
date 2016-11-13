@@ -128,11 +128,11 @@ void TicksInterrupt() {
 
 	OSTime++;
 	for(static unsigned char i = 0; i < OS_TASKS; i++) {
-		if (TCB[i].OSTCBDly) {
+		if (TCB[i].OSTCBDly)
 			TCB[i].OSTCBDly--;
-			if (TCB[i].OSTCBDly == 0)	//延时时钟到达
-				OS_SET_PRIO_RDY(i);		//任务重新就绪
-		}
+		else //延时时钟到达
+			OS_SET_PRIO_RDY(i);		//任务重新就绪
+
 	}
 }
 ```
