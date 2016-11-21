@@ -35,6 +35,7 @@ LIBDIR=$(TOP)/libs
 
 #Adust the following line to the library in use
 STMLIB=$(LIBDIR)/STM32_USB-FS-Device_Lib_V4.0.0/Libraries
+
 #Adjust TypeOfMCU in use, see CMSIS file "stm32f10x.h"
 #STM32F103RBT (128KB FLASH, 20KB RAM) --> STM32F10X_MD
 #TypeOfMCU=STM32F10X_MD

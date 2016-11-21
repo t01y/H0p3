@@ -19,6 +19,10 @@ libstm32.a:
 			-I../../CMSIS/Device/ST/STM32F10x/Include \
 			-I../inc \
 			*.c
+	@cd $(LIBDIR)/freeRTOS && \
+		$(CC) $(CFLAGSlib) \
+			-D"assert_param(expr)=((void)0)" \
+			*.c
 #	@cd $(STMLIB)/STM32_USB-FS-Device_Driver/src && \
 #	$(CC) $(CFLAGSlib) \
 #	-D"assert_param(expr)=((void)0)" \
@@ -38,6 +42,7 @@ clean:
 	rm -f $(STMLIB)/STM32F10x_StdPeriph_Driver/src/*.o
 	rm -f $(STMLIB)/STM32_USB-FS-Device_Driver/src/*.o
 	rm -f $(LIBS)
+	rm -f $(LIBDIR)/freeRTOS/*.o
 tshow:
 	@echo "######################################################################################################"
 	@echo "################# optimize settings: $(InfoTextLib), $(InfoTextSrc)"
