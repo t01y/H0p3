@@ -45,6 +45,5 @@ flash:
 dump:
 	$(OBJDUMP) -D main.elf > DUMP.s
 	open DUMP.s
-	say "Bazinga"
 tty:
 	screen /dev/tty.SLAB_USBtoUART 115200
