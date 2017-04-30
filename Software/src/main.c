@@ -1,6 +1,12 @@
 #include "stm32f10x.h"
 #include "uart.h"
 #include "MPU6050.h"
+#include <math.h>
+
+double _asin(double i) {return asin(i);}
+double _atan2(double i,double k) {return atan2(i,k);}
+double _sqrt(double i) {return sqrt(i);}
+
 
 #define NVIC_GROUPING	3
 
@@ -28,9 +34,23 @@ int main() {
 
 	uart_init(72, 115200);
 	MPU_init();
+	SixAxis imuData;
 
 	while(1) {
-		MPU6050_debug();
+		MPU6050_getStructData(&imuData);
+		IMU_comput(imuData);
+
+		uart_sendStr("Pitch Angle: ");
+		uart_Float2Char(g_Pitch);
+
+		uart_sendStr("; Roll Angle: ");
+		uart_Float2Char(g_Roll);
+
+		uart_sendStr("; Yaw Angle: ");
+		uart_Float2Char(g_Yaw);
+
+		UART_CR();
+
 		delay_ms(100);
 	}
 	while(1);
