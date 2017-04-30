@@ -42,56 +42,31 @@ void uart_init(unsigned int pclk2, unsigned int bound) {
 
 void USART1_IRQHandler(void) {
 	if(USART1->SR & USART_SR_RXNE) {
-		char cmd = USART1->DR;	// Read this register to clear RXNE flag
+		const char cmd = USART1->DR;	// 读取串口接收寄存器来清除 RXNE 标志
 		switch (cmd) {
-			case 0x0D:
+			case 0x0D:	//回车键
 			case 0x0A:
-				UART_CR();
-				uart_sendStr("Handle Command:\t");
+				uart_sendStr("\n\r当前命令:\t");
 				uart_sendStr(gCmdCache);
 				UART_CR();
+				// uart_decode(gCmdCache);
 				clrCache();
 				break;
-			case 0x08:
+			case 0x08:	//退格键
 			case 0x7F:
 				pop = '\0';
 				uart_sendData(0x7F);
 				uart_sendData(0x08);
 				break;
-			case '$':
+			case TOKEN_START:	//$ - 命令起始标志
 				clrCache();
-			default:
-				if(STACK_OVERFLOW)
+			default:	//其它按键
+				if(STACK_OVERFLOW)	//如果指令缓存将要溢出, 则不会入栈当前字符
 					break;
-				push(cmd);
-				uart_sendData(cmd);
+				push(cmd);			//保存当前字符
+				uart_sendData(cmd);	//在终端回显, 反馈用户输入的字符
 				break;
 		}
-	}
-}
-
-void uart_decode() {
-//	The Last Item Of CMD Cache Array
-//	| 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |-bit-|
-//	Each bit is a switch of IR Devices
-	char k;
-	// unsigned char stagement;
-	while(top > -1) {	// While CMD Cache Not Empty
-		k = pop;
-		if(ISLEGAL_NUM(k)) {	// Handle Numbers
-			gCmdCache[CMD_MAX_LENGTH - 1] |= 1 << (k - '0');	// Store number argument to the top of cmd stack
-		} else {	// Handle Key Token
-			if(k == TOKEN_SEND) {	// Send data
-
-			}
-			else if(k == TOKEN_LEARN) {	// decode and store data
-
-			}
-		}
-
-
-
-
 	}
 }
 
@@ -100,10 +75,26 @@ void uart_sendData(unsigned char data) {
     while((USART1->SR & 0x40) == 0);
 }
 
-void uart_showData(short k) {
-	char cache[] = "00000";
-	int i = 4;
-	unsigned short bit[] = {10000, 1000, 100, 10, 1};
+void uart_sendStr(char *cmd) {
+	while(*cmd)
+		uart_sendData(*cmd++);
+}
+
+void uart_int2char(unsigned int k) {
+	char cache[] = "0000000000";	// Max value is 4294967295
+	unsigned char i = 9;
+	const unsigned int bit[] = {1000000000, 100000000, 10000000, 1000000, 100000, 10000, 1000, 100, 10, 1};
+
+	do {
+		cache[i] += (char)(k / bit[i] % 10);
+	} while(i--);
+	uart_sendStr(cache);
+}
+
+void uart_short2char(unsigned short k) {
+	char cache[] = "00000";	// Max value is 4294967295
+	unsigned char i = 4;
+	const unsigned int bit[] = {10000, 1000, 100, 10, 1};
 
 	do {
 		cache[i] += (char)(k / bit[i] % 10);
@@ -163,9 +154,4 @@ unsigned char uart_Float2Char(float value) {
     }
 
     return i;
-}
-
-void uart_sendStr(char *cmd) {
-	while(*cmd)
-		uart_sendData(*cmd++);
 }

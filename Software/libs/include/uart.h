@@ -2,12 +2,16 @@
 #define UART_H
 
 void uart_init(unsigned int pclk2, unsigned int bound);
+
 void uart_sendData(unsigned char data);
-void uart_showData(short k);    //THIS FUNCTION IS NOT SO GOOD, EG: uart_showData(1000)
-unsigned char uart_Float2Char(float value);
 void uart_sendStr(char * cmd);
+
+void uart_int2char(unsigned int k);
+void uart_short2char(unsigned short k);
+unsigned char uart_Float2Char(float value);
+
 void USART1_IRQHandler(void);
-void uart_decode();
+
 
 #define UART_CR() do {\
     uart_sendData(0x0D);\
@@ -26,10 +30,12 @@ void uart_decode();
 #define STACK_OVERFLOW	(top == CMD_MAX_LENGTH - 1)
 
 //	decode
-#define TOKEN_SEND	'S'
-#define TOKEN_LEARN	'L'
-#define CMD_NUM_MAX	'8'
-#define CMD_NUM_MIN	'1'
+#define TOKEN_START		'$'
+#define TOKEN_SEND		'S'
+#define TOKEN_LEARN		'L'
+#define TOKEN_OFFSET	0x01
+#define CMD_NUM_MAX		'8'
+#define CMD_NUM_MIN		'1'
 #define ISLEGAL_NUM(k)	(((k) >= CMD_NUM_MIN) && ((k) <= CMD_NUM_MAX))
 
 #endif
