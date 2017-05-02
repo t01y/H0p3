@@ -32,7 +32,7 @@ void delay(volatile unsigned int count);
 #define WHO_AM_I        0x75
 
 //=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_
-#define IMU_SOFTWARE_FIXED
+// #define IMU_SOFTWARE_FIXED
 
 #define G_X_OFFSET 5.2439f
 #define G_Y_OFFSET -0.7926f

@@ -33,23 +33,25 @@ int main() {
 	NVIC_SetPriorityGrouping(0x07 - NVIC_GROUPING);
 
 	uart_init(72, 115200);
+	delay_ms(50);
 	MPU_init();
 	SixAxis imuData;
 
 	while(1) {
 		MPU6050_getStructData(&imuData);
-		IMU_comput(imuData);
-
-		uart_sendStr("Pitch Angle: ");
-		uart_Float2Char(g_Pitch);
-
-		uart_sendStr("; Roll Angle: ");
-		uart_Float2Char(g_Roll);
-
-		uart_sendStr("; Yaw Angle: ");
-		uart_Float2Char(g_Yaw);
-
-		UART_CR();
+		MPU6050_debug(&imuData);
+		// IMU_comput(imuData);
+		//
+		// uart_sendStr("Pitch Angle: ");
+		// uart_Float2Char(g_Pitch);
+		//
+		// uart_sendStr("; Roll Angle: ");
+		// uart_Float2Char(g_Roll);
+		//
+		// uart_sendStr("; Yaw Angle: ");
+		// uart_Float2Char(g_Yaw);
+		//
+		// UART_CR();
 
 		delay_ms(100);
 	}
