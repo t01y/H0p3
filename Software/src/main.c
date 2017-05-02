@@ -29,10 +29,14 @@ int main() {
 	uart_init(72, 115200);
 	// delay_ms(50);
 	oled_init();
-
+	ramInsertBlock(0, 0, block1);
+	ramInsertBlock(120, 120, block1);
+	ramInsertBlock(120, 0, block1);
+	ramInsertBlock(0, 120, block1);
+	ramInsertBlock(60, 60, block1);
+	unsigned int offset = 0;
 	while(1) {
-		uart_sendStr("?\n\r");
-		delay_ms(500);
+		oled_DrawViewPort(0, offset++);
 	}
 	while(1);
 }

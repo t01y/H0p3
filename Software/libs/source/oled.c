@@ -2,6 +2,28 @@
 #include "stm32f10x.h"
 #include "bit.h"
 
+unsigned char display_mem[OLED_DISPLAY_MEM_HEIGHT][OLED_DISPLAY_MEM_WIDTH] = {};
+const unsigned short TB[] = {
+	0x0000,
+	0x0821,
+	0x1863,
+	0x38E7,
+	0x79EF,
+	0xFBFF,
+	0xFFFF
+};
+
+unsigned char block1[] = {
+	0, 0, 0, 0, 0, 0, 0, 0,
+	0, 6, 6, 6, 6, 6, 6, 0,
+	0, 6, 2, 2, 2, 2, 6, 0,
+	0, 6, 2, 0, 0, 2, 6, 0,
+	0, 6, 2, 0, 0, 2, 6, 0,
+	0, 6, 2, 0, 0, 2, 6, 0,
+	0, 6, 2, 2, 2, 2, 6, 0,
+	0, 6, 6, 6, 6, 6, 6, 0
+};
+
 void oled_init() {
 	// initial I/O Port
 	RCC->APB2ENR |= RCC_APB2ENR_IOPBEN|RCC_APB2ENR_IOPAEN;
@@ -174,6 +196,7 @@ void oled_init() {
 
 	//Set Sleep Mode Off
 	oled_cmd(0xAF);
+	delay_ms(1000);
 
 }
 
@@ -191,8 +214,12 @@ void oled_sendSingleByte(unsigned char c, unsigned char cmdFlag) {
 	CS = 1;
 }
 
-void fill_ram (unsigned char h, unsigned char l) {
-	unsigned char i, c;
+void oled_send2Bytes(unsigned short d) {
+	oled_data(((unsigned char *)&d)[0]);
+	oled_data(((unsigned char *)&d)[1]);
+}
+
+void oled_DrawViewPort(unsigned char x, unsigned char y) {
 	oled_cmd(0x15);
 	oled_data(0x00);
 	oled_data(0x7F);
@@ -202,11 +229,32 @@ void fill_ram (unsigned char h, unsigned char l) {
 	oled_data(0x7F);
 
 	oled_cmd(0x5C);
+	for(unsigned char i = 0; i < OLED_PIXEL_HEIGHT; i++) {
+		for(unsigned char j = 0; j < OLED_PIXEL_WIDTH; j++) {
+			// unsigned char *rgb = (unsigned char *)&display_mem[(y+i)&0x7F][(x+j)&0x7F];
+			// oled_data(rgb[0]);
+			// oled_data(rgb[1]);
+			oled_send2Bytes(TB[display_mem[(y+i)&0xFF][(x+j)&0x7F]]);
+		}
+	}
+}
 
-	for (i = 0; i < 128; i++) {
-		for (c = 0; c < 128; c++) {
-			oled_data(h);
-			oled_data(l);
+void oled_delay(unsigned int t) {
+	SysTick->LOAD = 1 * t;
+	SysTick->VAL = 0;
+	SysTick->CTRL = 0x01;
+	for(unsigned int tmp = SysTick->CTRL;(tmp&0x01)&&(!(tmp&SysTick_CTRL_COUNTFLAG));tmp = SysTick->CTRL);
+	SysTick->CTRL = 0;
+	SysTick->VAL = 0;
+}
+void oled_nop(volatile unsigned int nus) {
+    for(nus *= 1; nus; nus--);
+}
+
+void ramInsertBlock(unsigned char x, unsigned char y, unsigned char* data) {
+	for(unsigned char i = 0; i < OLED_BLOCK_HEIGHT; i++) {
+		for(unsigned char j = 0; j < OLED_BLOCK_WIDTH; j++) {
+			display_mem[y+i][x+j] = *data++;
 		}
 	}
 
