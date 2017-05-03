@@ -3,7 +3,7 @@
 #include "bit.h"
 
 unsigned char display_mem[OLED_DISPLAY_MEM_HEIGHT][OLED_DISPLAY_MEM_WIDTH] = {};
-const unsigned short TB[] = {
+const unsigned short TB[] = {	// Color Table
 	0x0000,
 	0x0821,
 	0x1863,
@@ -212,10 +212,8 @@ void oled_sendSingleByte(unsigned char c, unsigned char cmdFlag) {
 	CS = 1;
 }
 
-void oled_send2Bytes(unsigned short d) {
-	oled_data(((unsigned char *)&d)[0]);
-	oled_data(((unsigned char *)&d)[1]);
-}
+unsigned int color = 0;
+
 
 void oled_DrawViewPort(unsigned char x, unsigned char y) {
 	oled_cmd(0x15);
@@ -229,10 +227,10 @@ void oled_DrawViewPort(unsigned char x, unsigned char y) {
 	oled_cmd(0x5C);
 	for(unsigned char i = 0; i < OLED_PIXEL_HEIGHT; i++) {
 		for(unsigned char j = 0; j < OLED_PIXEL_WIDTH; j++) {
-			// unsigned char *rgb = (unsigned char *)&display_mem[(y+i)&0x7F][(x+j)&0x7F];
-			// oled_data(rgb[0]);
-			// oled_data(rgb[1]);
-			oled_send2Bytes(TB[display_mem[(y+i)&0xFF][(x+j)&0x7F]]);
+			// oled_send2Bytes(TB[display_mem[(y+i)&0xFF][(x+j)&0x7F]]);
+			unsigned short c = RGB(color);
+			oled_send2Bytes(c);
+			color++;
 		}
 	}
 }
