@@ -206,9 +206,7 @@ void oled_sendSingleByte(unsigned char c, unsigned char cmdFlag) {
 	for(char bit = 0; bit < 8; bit++) {
 		SCLK = 0;
 		SDIN = (c & 1<<(7-bit)) >> (7-bit);
-		OLED_DELAY();
 		SCLK = 1;
-		OLED_DELAY();
 	}
 	SCLK = 0;
 	CS = 1;
@@ -239,17 +237,7 @@ void oled_DrawViewPort(unsigned char x, unsigned char y) {
 	}
 }
 
-void oled_delay(unsigned int t) {
-	SysTick->LOAD = 1 * t;
-	SysTick->VAL = 0;
-	SysTick->CTRL = 0x01;
-	for(unsigned int tmp = SysTick->CTRL;(tmp&0x01)&&(!(tmp&SysTick_CTRL_COUNTFLAG));tmp = SysTick->CTRL);
-	SysTick->CTRL = 0;
-	SysTick->VAL = 0;
-}
-void oled_nop(volatile unsigned int nus) {
-    for(nus *= 1; nus; nus--);
-}
+
 
 void ramInsertBlock(unsigned char x, unsigned char y, unsigned char* data) {
 	for(unsigned char i = 0; i < OLED_BLOCK_HEIGHT; i++) {

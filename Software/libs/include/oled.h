@@ -16,17 +16,12 @@
 extern void delay_us(unsigned int t);
 extern void delay_ms(unsigned int t);
 
-#define OLED_DELAY()	do {\
-	oled_nop(1);\
-} while(0)
 
 void oled_init();
 void oled_sendSingleByte(unsigned char, unsigned char);
 void oled_DrawViewPort(unsigned char h, unsigned char l);
-void oled_delay(unsigned int t);
 void ramInsertBlock(unsigned char x, unsigned char y, unsigned char* data);
 void oled_send2Bytes(unsigned short d);
-void oled_nop(volatile unsigned int nus);
 
 #define OLED_CMD_FLAG	0
 #define OLED_DATA_FLAG	1
