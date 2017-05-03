@@ -21,6 +21,8 @@ void oled_init();
 void oled_sendSingleByte(unsigned char, unsigned char);
 void oled_DrawViewPort(unsigned char h, unsigned char l);
 void ramInsertBlock(unsigned char x, unsigned char y, unsigned char* data);
+void oled_send2Bytes(unsigned char d);
+
 // (16 - 11) + (8 - 5); (8 - 5) + (8 - 6); 0 + (8 - 5)
 #define RGB(x)	(unsigned short)((((x)>>8 )& 0xF800) | (((x)>>5) & 0x07E0) | (((x)>>3) & 0x001F))
 
@@ -35,10 +37,6 @@ void ramInsertBlock(unsigned char x, unsigned char y, unsigned char* data);
 	oled_sendSingleByte((k), OLED_DATA_FLAG);\
 } while(0)
 
-#define oled_send2Bytes(d) do {\
-	oled_data(((unsigned char *)&(d))[0]);\
-	oled_data(((unsigned char *)&(d))[1]);\
-} while(0)
 
 #define ramInsertPoint(x, y, c) do {\
 	display_mem[(unsigned char)(y)][(unsigned char)(x)] = (unsigned char)(c);\

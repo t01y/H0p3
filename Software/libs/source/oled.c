@@ -212,6 +212,11 @@ void oled_sendSingleByte(unsigned char c, unsigned char cmdFlag) {
 	CS = 1;
 }
 
+void oled_send2Bytes(unsigned char d) {
+	oled_data(((unsigned char *)&(d))[0]);
+	oled_data(((unsigned char *)&(d))[1]);
+}
+
 unsigned int color = 0;
 
 
@@ -227,9 +232,7 @@ void oled_DrawViewPort(unsigned char x, unsigned char y) {
 	oled_cmd(0x5C);
 	for(unsigned char i = 0; i < OLED_PIXEL_HEIGHT; i++) {
 		for(unsigned char j = 0; j < OLED_PIXEL_WIDTH; j++) {
-			// oled_send2Bytes(TB[display_mem[(y+i)&0xFF][(x+j)&0x7F]]);
-			unsigned short c = RGB(color);
-			oled_send2Bytes(c);
+			oled_send2Bytes(RGB(color));
 			color++;
 		}
 	}
