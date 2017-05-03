@@ -37,6 +37,7 @@ int main() {
 	unsigned int offset = 0;
 	while(1) {
 		oled_DrawViewPort(0, offset++);
+		delay_ms(500);
 	}
 	while(1);
 }

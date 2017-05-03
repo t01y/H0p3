@@ -212,12 +212,12 @@ void oled_sendSingleByte(unsigned char c, unsigned char cmdFlag) {
 	CS = 1;
 }
 
-void oled_send2Bytes(unsigned char d) {
-	oled_data(((unsigned char *)&(d))[0]);
+void oled_send2Bytes(unsigned short d) {
 	oled_data(((unsigned char *)&(d))[1]);
+	oled_data(((unsigned char *)&(d))[0]);
 }
 
-unsigned int color = 0;
+unsigned int color = 0xFF0000;
 
 
 void oled_DrawViewPort(unsigned char x, unsigned char y) {

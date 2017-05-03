@@ -21,7 +21,7 @@ void oled_init();
 void oled_sendSingleByte(unsigned char, unsigned char);
 void oled_DrawViewPort(unsigned char h, unsigned char l);
 void ramInsertBlock(unsigned char x, unsigned char y, unsigned char* data);
-void oled_send2Bytes(unsigned char d);
+void oled_send2Bytes(unsigned short d);
 
 // (16 - 11) + (8 - 5); (8 - 5) + (8 - 6); 0 + (8 - 5)
 #define RGB(x)	(unsigned short)((((x)>>8 )& 0xF800) | (((x)>>5) & 0x07E0) | (((x)>>3) & 0x001F))
