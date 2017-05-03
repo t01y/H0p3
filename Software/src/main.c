@@ -29,15 +29,17 @@ int main() {
 	uart_init(72, 115200);
 	// delay_ms(50);
 	oled_init();
-	ramInsertBlock(0, 0, block1);
-	ramInsertBlock(120, 120, block1);
-	ramInsertBlock(120, 0, block1);
-	ramInsertBlock(0, 120, block1);
-	ramInsertBlock(60, 60, block1);
+	ramDrawPoint(0, 0, 2);
+	ramDrawPoint(0, 63, 2);
+	ramDrawPoint(255, 0, 2);
+	ramDrawPoint(255, 63, 2);
+
+	ramDrawPoint(127, 32, 6);
+
 	unsigned int offset = 0;
 	while(1) {
-		oled_DrawViewPort(0, offset++);
-		delay_ms(500);
+		oled_DrawViewPort(offset++, 0);
+		delay_ms(10);
 	}
 	while(1);
 }

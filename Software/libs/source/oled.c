@@ -6,23 +6,13 @@ unsigned char display_mem[OLED_DISPLAY_MEM_HEIGHT][OLED_DISPLAY_MEM_WIDTH] = {};
 const unsigned short TB[] = {	// Color Table
 	0x0000,
 	0x0821,
-	0x1863,
+	RGB(0x5500FF),
 	0x38E7,
 	0x79EF,
 	0xFBFF,
 	0xFFFF
 };
 
-unsigned char block1[] = {
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 6, 6, 6, 6, 6, 6, 0,
-	0, 6, 2, 2, 2, 2, 6, 0,
-	0, 6, 2, 0, 0, 2, 6, 0,
-	0, 6, 2, 0, 0, 2, 6, 0,
-	0, 6, 2, 0, 0, 2, 6, 0,
-	0, 6, 2, 2, 2, 2, 6, 0,
-	0, 6, 6, 6, 6, 6, 6, 0
-};
 
 void oled_init() {
 	// initial I/O Port
@@ -217,7 +207,6 @@ void oled_send2Bytes(unsigned short d) {
 	oled_data(((unsigned char *)&(d))[0]);
 }
 
-unsigned int color = 0xFF0000;
 
 
 void oled_DrawViewPort(unsigned char x, unsigned char y) {
@@ -226,25 +215,13 @@ void oled_DrawViewPort(unsigned char x, unsigned char y) {
 	oled_data(0x7F);
 
 	oled_cmd(0x75);
-	oled_data(0x00);
+	oled_data(OLED_VIEWPORT_OFFSET);
 	oled_data(0x7F);
 
 	oled_cmd(0x5C);
-	for(unsigned char i = 0; i < OLED_PIXEL_HEIGHT; i++) {
-		for(unsigned char j = 0; j < OLED_PIXEL_WIDTH; j++) {
-			oled_send2Bytes(RGB(color));
-			color++;
+	for(unsigned char i = 0; i < OLED_VIEWPORT_HEIGHT; i++) {
+		for(unsigned char j = 0; j < OLED_VIEWPORT_WIDTH; j++) {
+			oled_send2Bytes(TB[display_mem[(y+i)&MEM_MASK_Y][(x+j)&MEM_MASK_X]]);
 		}
 	}
-}
-
-
-
-void ramInsertBlock(unsigned char x, unsigned char y, unsigned char* data) {
-	for(unsigned char i = 0; i < OLED_BLOCK_HEIGHT; i++) {
-		for(unsigned char j = 0; j < OLED_BLOCK_WIDTH; j++) {
-			display_mem[y+i][x+j] = *data++;
-		}
-	}
-
 }

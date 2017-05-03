@@ -38,23 +38,27 @@ void oled_send2Bytes(unsigned short d);
 } while(0)
 
 
-#define ramInsertPoint(x, y, c) do {\
-	display_mem[(unsigned char)(y)][(unsigned char)(x)] = (unsigned char)(c);\
+#define ramDrawPoint(x, y, c) do {\
+	display_mem[(y)][(x)] = (unsigned char)(c);\
 } while(0)
 
 // GUI
 #define OLED_COLOR_BYTE				2
 
-#define OLED_BLOCK_WIDTH			8
-#define OLED_BLOCK_HEIGHT			8
-#define OLED_PIXEL_WIDTH			128
-#define OLED_PIXEL_HEIGHT			128
-#define OLED_DISPLAY_MEM_WIDTH		128
-#define OLED_DISPLAY_MEM_HEIGHT		256
+#define OLED_SCREEN_WIDTH			128
+#define OLED_SCREEN_HEIGHT			128
 
+#define OLED_VIEWPORT_OFFSET		64
+#define OLED_VIEWPORT_WIDTH			128
+#define OLED_VIEWPORT_HEIGHT		64
 
-// unsigned short display_mem[OLED_DISPLAY_MEM_HEIGHT][OLED_DISPLAY_MEM_WIDTH];
-unsigned char block1[OLED_BLOCK_HEIGHT*OLED_BLOCK_WIDTH];
+#define OLED_DISPLAY_MEM_WIDTH		256
+#define OLED_DISPLAY_MEM_HEIGHT		64
+
+#define MEM_MASK_X					0xFF	// 256 - 1
+#define MEM_MASK_Y					0x3F	// 64 - 1
+
+unsigned char display_mem[OLED_DISPLAY_MEM_HEIGHT][OLED_DISPLAY_MEM_WIDTH];
 
 
 
