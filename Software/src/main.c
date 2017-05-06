@@ -1,8 +1,14 @@
 #include "stm32f10x.h"
+#include <math.h>
 #include "uart.h"
-#include "oled.h"
+// #include "oled.h"
+#include "MPU6050.h"
 
 #define NVIC_GROUPING	3
+
+double _asin(double i) {return asin(i);}
+double _atan2(double i,double k) {return atan2(i,k);}
+double _sqrt(double i) {return sqrt(i);}
 
 void delay_ms(unsigned int t) {
 	SysTick->LOAD = 9000 * t;
@@ -22,24 +28,30 @@ void delay_us(unsigned int t) {
 	SysTick->CTRL = 0;
 	SysTick->VAL = 0;
 }
-
 int main() {
 	NVIC_SetPriorityGrouping(0x07 - NVIC_GROUPING);
 
 	uart_init(72, 115200);
-	// delay_ms(50);
-	oled_init();
-	ramDrawPoint(0, 0, 2);
-	ramDrawPoint(0, 63, 2);
-	ramDrawPoint(255, 0, 2);
-	ramDrawPoint(255, 63, 2);
+	// delay_ms(10);
+	MPU_init();
+	SixAxis data;
 
-	ramDrawPoint(127, 32, 6);
-
-	unsigned int offset = 0;
 	while(1) {
-		oled_DrawViewPort(offset++, 0);
-		delay_ms(10);
+		MPU6050_getStructData(&data);
+		IMU_Comput(data);
+
+		MPU6050_debug(&data);
+		UART_CR();
+
+		uart_sendStr("Pitch: ");
+		uart_Float2Char(g_Pitch);
+		uart_sendStr("/tRoll: ");
+		uart_Float2Char(g_Roll);
+		uart_sendStr("/tYaw: ");
+		uart_Float2Char(g_Yaw);
+		UART_CR();
+		delay_ms(100);
+
 	}
 	while(1);
 }

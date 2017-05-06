@@ -32,24 +32,18 @@ void delay(volatile unsigned int count);
 #define WHO_AM_I        0x75
 
 //=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_
-// #define IMU_SOFTWARE_FIXED
+#define IMU_SOFTWARE_FIXED
 
-#define G_X_OFFSET 5.2439f
-#define G_Y_OFFSET -0.7926f
-#define G_Z_OFFSET -0.3048f
+#define G_X_OFFSET 2.7439f
+#define G_Y_OFFSET 1.7073f
+#define G_Z_OFFSET 2.1951f
 
 #define A_X_OFFSET 0
-#define A_Y_OFFSET 11.3f
-#define A_Z_OFFSET 0
+#define A_Y_OFFSET 0
+#define A_Z_OFFSET 2.00f
 
 #define IMU_ADDRESS 0x68
 #define IMU_NOT_CONNECTED (MPU_Sigle_Read(WHO_AM_I)!=IMU_ADDRESS)
-
-#define Kp      100.0f      //比例增益支配率(常量)
-#define Ki      0.002f      //积分增益支配率
-#define halfT   0.001f      //采样周期的一半
-float g_Pitch, g_Roll, g_Yaw;
-
 
 typedef struct{
     float gX;
@@ -60,17 +54,23 @@ typedef struct{
     float aZ;
 }SixAxis, *pSixAxis;
 
+#define Kp      100.0f      //比例增益支配率(常量)
+#define Ki      0.002f      //积分增益支配率
+#define halfT   0.001f      //采样周期的一半
+
+float g_Yaw, g_Pitch, g_Roll;
+
 extern double _asin (double);
 extern double _atan2 (double,double);
 extern double _sqrt (double);
 
+
 void MPU_Sigle_Write(unsigned char reg_addr, unsigned char reg_data);
-unsigned char MPU_Sigle_Read(unsigned reg_addr);	// Read single byte
-short MPU_GetData(unsigned char REG_Addr);			// Return 2 bytes data
+unsigned char MPU_Sigle_Read(unsigned reg_addr);
+short MPU_GetData(unsigned char REG_Addr);
 void MPU_init();
 void MPU6050_getStructData(pSixAxis cache);
 void MPU6050_debug(pSixAxis cache);
-void IMU_comput(SixAxis cache);
-
+void IMU_Comput(SixAxis);
 
 #endif

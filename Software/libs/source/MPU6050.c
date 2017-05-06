@@ -92,11 +92,14 @@ void MPU6050_debug(pSixAxis cache) {
     uart_sendData(0x0D);
     uart_sendData(0x0A);
 }
-float g_Pitch, g_Roll, g_Yaw;
 
-void IMU_comput(SixAxis cache) {
+float g_Yaw, g_Pitch, g_Roll;
+
+
+void IMU_Comput(SixAxis cache) {
 	static float g_q0 = 1, g_q1 = 0, g_q2 = 0, g_q3 = 0;   //Quaternion
 	static float g_exInt = 0, g_eyInt = 0, g_ezInt = 0;
+
 
     float norm;     //模
     float vx, vy, vz;
