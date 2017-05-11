@@ -32,7 +32,7 @@ int main() {
 	NVIC_SetPriorityGrouping(0x07 - NVIC_GROUPING);
 
 	uart_init(72, 115200);
-	// delay_ms(10);
+	delay_ms(7);	// Delay is required after MPU6050 powered up, At least 7ms
 	MPU_init();
 	SixAxis data;
 
