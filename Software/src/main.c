@@ -45,9 +45,9 @@ int main() {
 
 		uart_sendStr("Pitch: ");
 		uart_Float2Char(g_Pitch);
-		uart_sendStr("/tRoll: ");
+		uart_sendStr("\tRoll: ");
 		uart_Float2Char(g_Roll);
-		uart_sendStr("/tYaw: ");
+		uart_sendStr("\tYaw: ");
 		uart_Float2Char(g_Yaw);
 		UART_CR();
 		delay_ms(100);
