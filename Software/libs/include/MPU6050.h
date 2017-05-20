@@ -34,13 +34,13 @@ void delay(volatile unsigned int count);
 //=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_=_
 #define IMU_SOFTWARE_FIXED
 
-#define G_X_OFFSET 2.7439f
-#define G_Y_OFFSET 1.7073f
-#define G_Z_OFFSET 2.1951f
+#define G_X_OFFSET 1.5853f
+#define G_Y_OFFSET 0.7926f
+#define G_Z_OFFSET 2.0121f
 
 #define A_X_OFFSET 0
 #define A_Y_OFFSET 0
-#define A_Z_OFFSET 2.00f
+#define A_Z_OFFSET 0.2f
 
 #define IMU_ADDRESS 0x68
 #define IMU_NOT_CONNECTED (MPU_Sigle_Read(WHO_AM_I)!=IMU_ADDRESS)
