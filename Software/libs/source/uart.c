@@ -62,7 +62,11 @@ void USART1_IRQHandler(void) {
 				// uart_sendStr("\tYaw: ");
 				uart_Float2Char(g_Yaw);
 				uart_sendStr("\n\r");
-
+				break;
+			case '>':	// Jump to bootloader
+				uart_sendStr("Running bootloader...");
+				jump2ISP();
+				// NOTE: running bootloader
 			default:	//其它按键
 				break;
 		}

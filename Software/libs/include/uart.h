@@ -12,6 +12,8 @@ unsigned char uart_Float2Char(float value);
 
 void USART1_IRQHandler(void);
 
+extern void jump2ISP();
+
 
 #define UART_CR() do {\
     uart_sendData(0x0D);\
