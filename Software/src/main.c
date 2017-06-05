@@ -28,30 +28,15 @@ void delay_us(unsigned int t) {
 	SysTick->CTRL = 0;
 	SysTick->VAL = 0;
 }
+
 int main() {
 	NVIC_SetPriorityGrouping(0x07 - NVIC_GROUPING);
 
 	uart_init(72, 115200);
 	delay_ms(7);	// Delay is required after MPU6050 powered up, At least 7ms
 	MPU_init();
-	SixAxis data;
 
 	while(1) {
-		MPU6050_getStructData(&data);
-		IMU_Comput(data);
-
-		MPU6050_debug(&data);
-		UART_CR();
-
-		uart_sendStr("Pitch: ");
-		uart_Float2Char(g_Pitch);
-		uart_sendStr("\tRoll: ");
-		uart_Float2Char(g_Roll);
-		uart_sendStr("\tYaw: ");
-		uart_Float2Char(g_Yaw);
-		UART_CR();
-		delay_ms(100);
-
 	}
 	while(1);
 }

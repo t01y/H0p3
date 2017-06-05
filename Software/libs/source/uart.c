@@ -1,5 +1,7 @@
 #include "uart.h"
 #include "stm32f10x.h"
+#include "MPU6050.h"
+SixAxis data;
 
 int top = -1;	//Stack Pointer
 char gCmdCache[CMD_MAX_LENGTH];
@@ -43,27 +45,25 @@ void USART1_IRQHandler(void) {
 	if(USART1->SR & USART_SR_RXNE) {
 		const char cmd = USART1->DR;	// 读取串口接收寄存器来清除 RXNE 标志
 		switch (cmd) {
-			case 0x0D:	//回车键
-			case 0x0A:
-				uart_sendStr("\n\r当前命令:\t");
-				uart_sendStr(gCmdCache);
-				UART_CR();
-				// uart_decode(gCmdCache);
-				clrCache();
-				break;
-			case 0x08:	//退格键
-			case 0x7F:
-				pop = '\0';
-				uart_sendData(0x7F);
-				uart_sendData(0x08);
-				break;
 			case TOKEN_START:	//$ - 命令起始标志
-				clrCache();
+				MPU6050_getStructData(&data);
+				IMU_Comput(data);
+
+				// MPU6050_debug(&data);
+				// UART_CR();
+
+				// uart_sendStr("Pitch: ");
+				uart_Float2Char(g_Pitch);
+				uart_sendStr("@");
+				// uart_sendStr("\tRoll: ");
+				uart_Float2Char(g_Roll);
+				uart_sendStr("@");
+
+				// uart_sendStr("\tYaw: ");
+				uart_Float2Char(g_Yaw);
+				uart_sendStr("\n\r");
+
 			default:	//其它按键
-				if(STACK_OVERFLOW)	//如果指令缓存将要溢出, 则不会入栈当前字符
-					break;
-				push(cmd);			//保存当前字符
-				uart_sendData(cmd);	//在终端回显, 反馈用户输入的字符
 				break;
 		}
 	}
