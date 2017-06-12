@@ -3,6 +3,7 @@
 #include "uart.h"
 // #include "oled.h"
 #include "MPU6050.h"
+#include "dmp.h"
 
 #define NVIC_GROUPING	3
 
@@ -40,9 +41,11 @@ int main() {
 	NVIC_SetPriorityGrouping(0x07 - NVIC_GROUPING);
 
 	uart_init(72, 115200);
-	
+
 	delay_ms(7);	// Delay is required after MPU6050 powered up, At least 7ms
 	MPU_init();
+	DMP_Initialize();
+
 
 	while(1) {
 	}

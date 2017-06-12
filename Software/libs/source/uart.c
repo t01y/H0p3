@@ -3,9 +3,6 @@
 #include "MPU6050.h"
 SixAxis data;
 
-int top = -1;	//Stack Pointer
-char gCmdCache[CMD_MAX_LENGTH];
-
 
 void uart_init(unsigned int pclk2, unsigned int bound) {
     float temp;
@@ -45,7 +42,7 @@ void USART1_IRQHandler(void) {
 	if(USART1->SR & USART_SR_RXNE) {
 		const char cmd = USART1->DR;	// 读取串口接收寄存器来清除 RXNE 标志
 		switch (cmd) {
-			case TOKEN_START:	//$ - 命令起始标志
+			case '$':	//$ - 命令起始标志
 				MPU6050_getStructData(&data);
 				IMU_Comput(data);
 
@@ -95,7 +92,7 @@ void uart_int2char(unsigned int k) {
 }
 
 void uart_short2char(unsigned short k) {
-	char cache[] = "00000";	// Max value is 4294967295
+	char cache[] = "00000";
 	unsigned char i = 4;
 	const unsigned int bit[] = {10000, 1000, 100, 10, 1};
 
