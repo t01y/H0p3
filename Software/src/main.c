@@ -1,5 +1,6 @@
 #include "stm32f10x.h"
 #include "i2c.h"
+#include <math.h>
 #include "uart.h"
 // #include "oled.h"
 #include "dmp.h"
@@ -8,8 +9,8 @@
 
 #define ISP_ADDR		0x1FFFF000
 
-// double _asin(double i) {return asin(i);}
-// double _atan2(double i,double k) {return atan2(i,k);}
+double _asin(double i) {return asin(i);}
+double _atan2(double i,double k) {return atan2(i,k);}
 // double _sqrt(double i) {return sqrt(i);}
 
 void delay_ms(unsigned int t) {
@@ -36,6 +37,12 @@ void jump2ISP() {
 	((void (*)(void))*((unsigned int *)(ISP_ADDR + 4)))();
 }
 
+
+Quaternion q;           // [w, x, y, z]         quaternion container
+float euler[3];         // [psi, theta, phi]    Euler angle container
+#define	M_PI 3.14f
+
+
 int main() {
 	NVIC_SetPriorityGrouping(0x07 - NVIC_GROUPING);
 
@@ -46,11 +53,42 @@ int main() {
 	// MPU_init();
 	MPUinitialize();
 
-	unsigned char status = DMP_Initialize();
+	DMP_Initialize();
+	MPUsetDMPEnabled(true);
 
+	unsigned char fifoBuffer[128];
+
+	unsigned char mpuIntStatus;
+	unsigned char fifoCount;
 
 	while(1) {
-		uart_short2char((unsigned short)status);
+		mpuIntStatus = MPUgetIntStatus();
+	    fifoCount = MPUgetFIFOCount();
+		if((mpuIntStatus & 0x10) || fifoCount == 1024) {
+			MPUresetFIFO();
+	        uart_sendStr("\r\nFIFO overflow!");
+		} else if(mpuIntStatus & 0x02) {
+			while (fifoCount < 42)
+				fifoCount = MPUgetFIFOCount();
+			MPUgetFIFOBytes(fifoBuffer, 42);
+			fifoCount -= 42;
+
+			MPUdmpGetQuaternion(&q, fifoBuffer);
+			MPUdmpGetEuler(euler, &q);
+
+			UART_CR();
+			uart_Float2Char(euler[0]);
+			uart_sendStr(", ");
+			uart_Float2Char(euler[1]);
+			uart_sendStr(", ");
+			uart_Float2Char(euler[2]);
+			uart_sendStr(", ");
+			
+
+
+		}
+
+
 	}
 	while(1);
 }

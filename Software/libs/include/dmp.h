@@ -1,6 +1,8 @@
 #ifndef DMP_H
 #define DMP_H
 
+extern double _asin (double);
+extern double _atan2 (double,double);
 // Portable
 extern void delay_ms(unsigned int t);
 
@@ -398,6 +400,17 @@ extern const unsigned char dmpUpdates[MPU6050_DMP_UPDATES_SIZE];
 
 
 
+typedef struct {
+        float w;
+        float x;
+        float y;
+        float z;
+} Quaternion;
+
+
+unsigned char *MPUdmpPacketBuffer;
+
+
 
 
 
@@ -410,5 +423,13 @@ typedef enum {
 
 unsigned char DMP_Initialize();
 void MPUinitialize();
+
+void MPUsetDMPEnabled(bool enabled);
+void MPUgetFIFOBytes(unsigned char *data, unsigned char length);
+unsigned char MPUgetIntStatus();
+unsigned short MPUgetFIFOCount();
+void MPUresetFIFO();
+unsigned char MPUdmpGetQuaternion(Quaternion *q, const unsigned char *packet);
+unsigned char MPUdmpGetEuler(float *data, Quaternion *q);
 
 #endif

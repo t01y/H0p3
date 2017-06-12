@@ -574,7 +574,7 @@ static void MPUsetZGyroOffsetUser(unsigned short offset) {
  * @see MPU6050_RA_USER_CTRL
  * @see MPU6050_USERCTRL_FIFO_RESET_BIT
  */
-static void MPUresetFIFO() {
+void MPUresetFIFO() {
     I2C_writeBit(MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_FIFO_RESET_BIT, TRUE);
 }
 
@@ -587,7 +587,7 @@ static void MPUresetFIFO() {
  * set of sensor data bound to be stored in the FIFO (register 35 and 36).
  * @return Current FIFO buffer size
  */
-static unsigned short MPUgetFIFOCount() {
+unsigned short MPUgetFIFOCount() {
     I2C_readBytes(MPU6050_RA_FIFO_COUNTH, 2, MPUbuffer);
     // return (((unsigned short)MPUbuffer[0]) << 8) | MPUbuffer[1];//sercan
 	unsigned short *arrayPointer = (unsigned short *)&MPUbuffer[0];
@@ -642,7 +642,7 @@ static void MPUsetFIFOEnabled(bool enabled) {
     I2C_writeBit(MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_FIFO_EN_BIT, enabled);
 }
 
-static void MPUsetDMPEnabled(bool enabled) {
+void MPUsetDMPEnabled(bool enabled) {
     I2C_writeBit(MPU6050_RA_USER_CTRL, MPU6050_USERCTRL_DMP_EN_BIT, enabled);
 }
 
@@ -681,7 +681,7 @@ static void MPUresetDMP() {
 //     I2C_readByte(MPU6050_RA_FIFO_R_W, MPUbuffer);
 //     return MPUbuffer[0];
 // }
-static void MPUgetFIFOBytes(unsigned char *data, unsigned char length) {
+void MPUgetFIFOBytes(unsigned char *data, unsigned char length) {
     I2C_readBytes(MPU6050_RA_FIFO_R_W, length, data);
 }
 
@@ -728,7 +728,7 @@ static void MPUreadMemoryBlock(unsigned char *data, unsigned short dataSize, uns
  * @return Current interrupt status
  * @see MPU6050_RA_INT_STATUS
  */
-static unsigned char MPUgetIntStatus() {
+unsigned char MPUgetIntStatus() {
     return I2C_readByte(MPU6050_RA_INT_STATUS);
 }
 
@@ -984,4 +984,36 @@ void MPUinitialize() {
     MPUsetFullScaleGyroRange(MPU6050_GYRO_FS_250);
     MPUsetFullScaleAccelRange(MPU6050_ACCEL_FS_2);
     MPUsetSleepEnabled(FALSE); // thanks to Jack Elston for pointing this one out!
+}
+
+
+static unsigned char MPUdmpGetQuaternion16(unsigned short *data, const unsigned char *packet) {
+    // TODO: accommodate different arrangements of sent data (ONLY default supported now)
+    if (packet == 0) packet = MPUdmpPacketBuffer;
+    data[0] = ((packet[0] << 8) + packet[1]);
+    data[1] = ((packet[4] << 8) + packet[5]);
+    data[2] = ((packet[8] << 8) + packet[9]);
+    data[3] = ((packet[12] << 8) + packet[13]);
+    return 0;
+}
+
+unsigned char MPUdmpGetQuaternion(Quaternion *q, const unsigned char *packet) {
+    // TODO: accommodate different arrangements of sent data (ONLY default supported now)
+    unsigned short qI[4];
+    unsigned char status = MPUdmpGetQuaternion16(qI, packet);
+    if (status == 0) {
+        q -> w = (float)qI[0] / 16384.0f;
+        q -> x = (float)qI[1] / 16384.0f;
+        q -> y = (float)qI[2] / 16384.0f;
+        q -> z = (float)qI[3] / 16384.0f;
+        return 0;
+    }
+    return status; // int16 return value, indicates error if this line is reached
+}
+
+unsigned char MPUdmpGetEuler(float *data, Quaternion *q) {
+    data[0] = _atan2(2*q -> x*q -> y - 2*q -> w*q -> z, 2*q -> w*q -> w + 2*q -> x*q -> x - 1);   // psi (z)
+    data[1] = -_asin(2*q -> x*q -> z + 2*q -> w*q -> y);                              // theta (y)
+    data[2] = _atan2(2*q -> y*q -> z - 2*q -> w*q -> x, 2*q -> w*q -> w + 2*q -> z*q -> z - 1);   // phi (x)
+    return 0;
 }
