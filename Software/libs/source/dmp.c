@@ -589,11 +589,7 @@ void MPUresetFIFO() {
  */
 unsigned short MPUgetFIFOCount() {
     I2C_readBytes(MPU6050_RA_FIFO_COUNTH, 2, MPUbuffer);
-    // return (((unsigned short)MPUbuffer[0]) << 8) | MPUbuffer[1];//sercan
-	unsigned short *arrayPointer = (unsigned short *)&MPUbuffer[0];
-	return *arrayPointer;
-	  //return (MPUbuffer[0]);
-
+    return (unsigned short)(MPUbuffer[0] << 8 | MPUbuffer[1]);//sercan
 }
 
 /** Set free-fall event acceleration threshold.
@@ -892,9 +888,10 @@ unsigned char DMP_Initialize() {
 			unsigned char fifoBuffer[128];
             MPUgetFIFOBytes(fifoBuffer, fifoCount);
 // #ifdef MPUDEBUG
-//             printf("\nReading interrupt status...");
-//             mpuIntStatus = MPUgetIntStatus();
-//             printf("\nCurrent interrupt status=%x", mpuIntStatus);
+            print("\r\nReading interrupt status...");
+            unsigned char mpuIntStatus = MPUgetIntStatus();
+            print("\r\nCurrent interrupt status=");
+			printChar(mpuIntStatus);
 // #endif
 
 			print("\r\nReading final memory update 6/7 (function unknown)...");
@@ -911,10 +908,10 @@ unsigned char DMP_Initialize() {
             MPUgetFIFOBytes(fifoBuffer, fifoCount);
 
 // #ifdef MPUDEBUG
-//             printf("\nReading interrupt status...");
-//             mpuIntStatus = MPUgetIntStatus();
-//
-//             printf("\nCurrent interrupt status=%x", mpuIntStatus);
+            print("\r\nReading interrupt status...");
+            mpuIntStatus = MPUgetIntStatus();
+			print("\r\nCurrent interrupt status=");
+			printChar(mpuIntStatus);
 // #endif
 
 			print("\r\nWriting final memory update 7/7 (function unknown)...");

@@ -59,7 +59,8 @@ int main() {
 	unsigned char fifoBuffer[128];
 
 	unsigned char mpuIntStatus;
-	unsigned char fifoCount;
+	unsigned short fifoCount;
+	mpuIntStatus = MPUgetIntStatus();
 
 	while(1) {
 		mpuIntStatus = MPUgetIntStatus();
@@ -83,7 +84,7 @@ int main() {
 			uart_sendStr(", ");
 			uart_Float2Char(euler[2]);
 			uart_sendStr(", ");
-			
+
 
 
 		}
