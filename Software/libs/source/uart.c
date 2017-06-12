@@ -44,7 +44,7 @@ void USART1_IRQHandler(void) {
 		switch (cmd) {
 			case '$':	//$ - 命令起始标志
 				MPU6050_getStructData(&data);
-				IMU_Comput(data);
+				// IMU_Comput(data);
 
 				// MPU6050_debug(&data);
 				// UART_CR();

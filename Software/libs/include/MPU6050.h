@@ -66,6 +66,9 @@ extern double _sqrt (double);
 
 
 void MPU_Sigle_Write(unsigned char reg_addr, unsigned char reg_data);
+void MPU_Write2bytes(unsigned char reg_addr, unsigned short word);
+void MPU_writeBytes(unsigned char writeAddr, unsigned char length, unsigned char *data);
+void MPU_readBytes(unsigned char readAddr, unsigned char length, unsigned char *data);
 unsigned char MPU_Sigle_Read(unsigned reg_addr);
 short MPU_GetData(unsigned char REG_Addr);
 void MPU_init();

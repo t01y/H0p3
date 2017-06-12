@@ -406,8 +406,9 @@ typedef enum {
 	true
 }bool;
 
-static unsigned char MPUverifyBuffer[MPU6050_DMP_MEMORY_CHUNK_SIZE];
+// static unsigned char MPUverifyBuffer[MPU6050_DMP_MEMORY_CHUNK_SIZE];
 
 unsigned char DMP_Initialize();
+void MPUinitialize();
 
 #endif

@@ -1,17 +1,16 @@
 #include "stm32f10x.h"
-#include <math.h>
+#include "i2c.h"
 #include "uart.h"
 // #include "oled.h"
-#include "MPU6050.h"
 #include "dmp.h"
 
 #define NVIC_GROUPING	3
 
 #define ISP_ADDR		0x1FFFF000
 
-double _asin(double i) {return asin(i);}
-double _atan2(double i,double k) {return atan2(i,k);}
-double _sqrt(double i) {return sqrt(i);}
+// double _asin(double i) {return asin(i);}
+// double _atan2(double i,double k) {return atan2(i,k);}
+// double _sqrt(double i) {return sqrt(i);}
 
 void delay_ms(unsigned int t) {
 	SysTick->LOAD = 9000 * t;
@@ -41,13 +40,17 @@ int main() {
 	NVIC_SetPriorityGrouping(0x07 - NVIC_GROUPING);
 
 	uart_init(72, 115200);
+	IIC_init();
 
-	delay_ms(7);	// Delay is required after MPU6050 powered up, At least 7ms
-	MPU_init();
-	DMP_Initialize();
+	delay_ms(1000);	// Delay is required after MPU6050 powered up, At least 7ms
+	// MPU_init();
+	MPUinitialize();
+
+	unsigned char status = DMP_Initialize();
 
 
 	while(1) {
+		uart_short2char((unsigned short)status);
 	}
 	while(1);
 }
