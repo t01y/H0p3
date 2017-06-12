@@ -8,7 +8,7 @@
 #define I2C_writeByte(addr, data)	MPU_Sigle_Write(addr, data)
 #define I2C_writeBytes				MPU_writeBytes
 #define I2C_writeWord(addr, data)	MPU_Write2bytes(addr, data)
-#define delay_ms					delay_ms
+#define dmp_delayms					delay_ms
 #define print						uart_sendStr
 #define printChar(x)				uart_int2char((unsigned int)x)
 
@@ -733,7 +733,7 @@ unsigned char DMP_Initialize() {
 
 	print("\r\nResetting MPU6050...");
 	I2C_writeByte(PWR_MGMT_1, I2C_readByte(PWR_MGMT_1)|1<<7);// Set DEVICE RESET BIT True
-	delay_ms(30);	// wait after reset
+	dmp_delayms(30);	// wait after reset
 
 	print("\r\nDisabling sleep mode...");
 	I2C_writeByte(PWR_MGMT_1, I2C_readByte(PWR_MGMT_1)&~(1<<6));// Disable sleep mode
@@ -772,7 +772,7 @@ unsigned char DMP_Initialize() {
     MPUsetSlaveAddress(0, 0x68);
     print("\r\nResetting I2C Master control...");
     MPUresetI2CMaster();
-    delay_ms(20);
+    dmp_delayms(20);
 
 	// load DMP code into memory banks
 	print("\r\nWriting DMP code to MPU memory banks (");

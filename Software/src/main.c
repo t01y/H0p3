@@ -33,6 +33,9 @@ void delay_us(unsigned int t) {
 }
 
 void jump2ISP() {
+	SysTick->CTRL = 0;
+	SysTick->LOAD = 0;
+	SysTick->VAL = 0;
 	__set_MSP(*(unsigned int *)ISP_ADDR);
 	((void (*)(void))*((unsigned int *)(ISP_ADDR + 4)))();
 }
@@ -44,12 +47,16 @@ float euler[3];         // [psi, theta, phi]    Euler angle container
 
 
 int main() {
+	SysTick->CTRL = 0;
+	SysTick->LOAD = 0;
+	SysTick->VAL = 0;
+
 	NVIC_SetPriorityGrouping(0x07 - NVIC_GROUPING);
 
 	uart_init(72, 115200);
 	IIC_init();
 
-	delay_ms(1000);	// Delay is required after MPU6050 powered up, At least 7ms
+	delay_ms(5000);	// Delay is required after MPU6050 powered up, At least 7ms
 	// MPU_init();
 	MPUinitialize();
 
